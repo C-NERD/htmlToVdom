@@ -160,7 +160,7 @@ proc toVNode(node : XmlNode) : VNode =
 ## Create a VNode tree recursively
 proc rVdomTree(rootnode : XmlNode) : seq[VNode] =
 
-  for pos1 in 1..<rootnode.len:
+  for pos1 in 0..<rootnode.len:
     
     if rootnode[pos1].kind == xnElement:
 
@@ -168,10 +168,10 @@ proc rVdomTree(rootnode : XmlNode) : seq[VNode] =
         vnode = rootnode[pos1].toVNode()
         lenght = rootnode[pos1].len
       
-      if lenght > 1:
+      #if lenght > 1:
 
-        for kid in rVdomTree(rootnode[pos1]):
-          vnode.add(kid)
+      for kid in rVdomTree(rootnode[pos1]):
+        vnode.add(kid)
 
       result.add(vnode)
     else:

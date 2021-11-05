@@ -1,27 +1,7 @@
 import ../src/htmlToVdom
 import karax / [karaxdsl, vdom, karax]
 
-let 
-  html = """
-  <nav id = "navbar" style = "background: blue;">Hello This is a navbar</nav>
-  <section id = "mainsection">
-    <pre>
-      <code>
-import htmToVdom, htmlstr
-echo htmlstr.str.toVdom()
-      </code>
-    </pre>
-    <p>Just some incorrect nim code</p>
-  </section>
-  <footer>
-    <div id = "legalsection">
-      <a href = "https://someurl">some text</a>
-      <a href = "https://someurl">some text</a>
-      <a href = "https://someurl">some text</a>
-    <div>
-  </footer>
-  """
-
+let html = "<p>Like always this answer will be vague because it's a test. Simple circular motion is the motion of an object in a parabolic path around another object. There are to forces that acts on this object and they are :</p><p><br></p><ol><li>Centripetal Force</li><li>And, Centrifugal Force</li></ol><p><br></p>"
 proc main() : VNode =
 
   result = buildHtml(main(id = "ROOT")):
