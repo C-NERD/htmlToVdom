@@ -183,3 +183,7 @@ proc toVdom*(html : string) : seq[VNode] =
 
   let tree = parseHtml(html)
   result = rVdomTree(tree)
+
+## Convert html string to Vdom
+proc toVdom*(html : XmlNode) : seq[VNode] =
+  result = rVdomTree(html)
