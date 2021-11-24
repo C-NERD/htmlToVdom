@@ -2,7 +2,7 @@ from karax/vdom import add, newVNode, text, setAttr, VNodeKind, VNode
 from strtabs import pairs
 from strutils import isEmptyOrWhitespace 
 from htmlparser import parseHtml, htmlTag, HtmlTag
-from xmltree import `[]`, items, attrs, text, kind, len, XmlNode, XmlNodeKind
+from xmltree import `[]`, items, attrs, text, kind, len, XmlNode, XmlNodeKind, `$`
 
 when not defined(js):
   {.error: "This module only works on the JavaScript platform".}
@@ -161,14 +161,12 @@ proc toVNode(node : XmlNode) : VNode =
 proc rVdomTree(rootnode : XmlNode) : seq[VNode] =
 
   for pos1 in 0..<rootnode.len:
-    
+      
     if rootnode[pos1].kind == xnElement:
 
       let 
         vnode = rootnode[pos1].toVNode()
         lenght = rootnode[pos1].len
-      
-      #if lenght > 1:
 
       for kid in rVdomTree(rootnode[pos1]):
         vnode.add(kid)
@@ -184,6 +182,16 @@ proc toVdom*(html : string) : seq[VNode] =
   let tree = parseHtml(html)
   result = rVdomTree(tree)
 
+  ## Fixes the bug that occures with a single node in the dom
+  if result == @[] and tree != nil:
+    
+    result.add(tree.toVNode())
+
 ## Convert html string to Vdom
 proc toVdom*(html : XmlNode) : seq[VNode] =
   result = rVdomTree(html)
+
+  ## Fixes the bug that occures with a single node in the dom
+  if result == @[] and html != nil:
+    
+    result.add(html.toVNode())
