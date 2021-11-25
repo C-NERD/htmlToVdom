@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.5"
 author        = "C-NERD"
 description   = "Karax extension to convert html in string form to embeddable Karax vdom"
 license       = "MIT"
