@@ -1,23 +1,12 @@
-# htmlToVdom
-
-Karax extension to convert html in string form to embeddable Karax vdom
-
-## Install with nimble
-
-```bash
-nimble install htmlToVdom
-```
-
-## Code example
-
-```Nim
-import htmlToVdom
+import unittest, ../src/htmlToVdom, karax / [vdom]
 from htmlparser import parseHtml
 from xmltree import `[]`, XmlNode, XmlNodeKind, kind, items
 
-let 
-    html = "<h2>Header2 <em>emphasis</em></h2>"
-    svg = """
+suite "htmlToVdom test":
+  
+    const
+        html = "<div>Hello world</div>"
+        svg = """
         <svg width="297mm" height="210mm" version="1.1" viewBox="0 0 297 210" xmlns="http://www.w3.org/2000/svg">
             <g font-weight="bold">
                 <g font-family="'Noto Sans Adlam Unjoined'">
@@ -27,30 +16,34 @@ let
                 </g>
                 <text x="63.8148" y="33.334621" font-family="sans-serif" font-size="50.8px" stroke-width=".26458" style="line-height:1.25" xml:space="preserve"><tspan x="63.8148" y="33.334621" font-family="sans-serif" font-weight="bold" stroke-width=".26458"/></text>
             </g>
-        </svg>"""
-
-## convert html to vnode
-let html_vnode = html.toVNode()
-
-## convert svg to vnode
-## Note this library uses the parseHtml() proc from the htmlparser library from the nim standard library, this 
-## proc for some reason adds a document tag as parent when converting svg to vnode which will lead to errors.
-## Hence you should manually parse your svg with the parseHtml proc and then extract your svg from the returned
-## XmlNode
-
-let 
-    node : XmlNode = block:
-
-        var node : XmlNode
-        for child in svg.parseHtml():
-
-            if child.kind() == xnElement:
-
-                node = child
-                break
-            
-        node
+        </svg>
+        """
   
-    vnode = node.toVNode()
+    test "Single node rendering test":
 
-```
+        let vnode = html.toVNode()
+        
+        assert(vnode.kind == tdiv)
+        assert(vnode[0].text == "Hello world")
+    
+    test "Svg rendering test":
+
+        let 
+            node : XmlNode = block : ## For some reason the htmlparse adds document tag as the parent tag
+
+                var node : XmlNode
+                for child in svg.parseHtml():
+
+                    if child.kind() == xnElement:
+
+                        node = child
+                        break
+                
+                node
+
+            vnode = node.toVNode()  
+
+        assert(vnode.kind == VNodeKind.svg)
+        assert(vnode[0].kind == g)
+        assert(vnode[0][0].kind == g)
+        assert(vnode[0][0].len == 3)
