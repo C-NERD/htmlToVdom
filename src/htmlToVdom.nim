@@ -4,7 +4,36 @@ from strutils import parseEnum, strip, isEmptyOrWhitespace
 from htmlparser import parseHtml
 from xmltree import `[]`, items, attrs, text, kind, len, tag, XmlNode, XmlNodeKind, `$`
 
-method getText(node : XmlNode) : string {.base.} =
+#[method getText(node : XmlNode) : string {.base.} =
+
+    if node.kind == xnText:
+
+        if not ($node).isEmptyOrWhitespace():
+
+            return $node
+
+    elif node.kind == xnElement:
+
+        for child in node:
+
+            if child.kind == xnText:
+                
+                if not ($child).isEmptyOrWhitespace():
+
+                    result.add($child)]#
+
+converter xmlToVNode(node : XmlNode) : VNode =
+    ## Converts XmlNode to VNode
+    
+    let attributes = node.attrs()
+    result = newVNode(parseEnum[VNodeKind](node.tag()))
+    if attributes != nil:
+    
+        for key, value in attributes.pairs():
+
+            result.setAttr(key, value)
+
+proc getText(node : XmlNode) : string =
 
     if node.kind == xnText:
 
@@ -21,17 +50,6 @@ method getText(node : XmlNode) : string {.base.} =
                 if not ($child).isEmptyOrWhitespace():
 
                     result.add($child)
-
-converter xmlToVNode(node : XmlNode) : VNode =
-    ## Converts XmlNode to VNode
-    
-    let attributes = node.attrs()
-    result = newVNode(parseEnum[VNodeKind](node.tag()))
-    if attributes != nil:
-    
-        for key, value in attributes.pairs():
-
-            result.setAttr(key, value)
 
 proc children(parent : XmlNode) : seq[VNode] =
     ## Gets children of xmlnode in VNode
